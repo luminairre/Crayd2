@@ -20,8 +20,6 @@ function __autoload($className) {
         // Is controller
         // Do the section detection...
         if ($section != null) {
-            echo $section;
-            exit;
             if (file_exists($appDir . DS . 'controllers' . DS . $section . DS . $className . EXT)) {
                 include_once($appDir . DS . 'controllers' . DS . $section . DS . $className . EXT);
             }
@@ -67,10 +65,6 @@ if (empty($_GET['_route']) && (!empty($_SERVER['PATH_INFO']) || !empty($_SERVER[
 }
 // Init route
 $route = new Crayd_Route($_GET['_route']);
-if($route->data->section != null) {
-    global $section;
-    $section = $route->data->section;
-}
 
 // Init controller
 if ($route->forceDefault) {

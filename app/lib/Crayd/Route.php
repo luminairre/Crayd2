@@ -70,6 +70,7 @@ class Crayd_Route {
             // No section detected, just get the segments if exists
             $this->data->segments = explode('/', $this->route);
         }
+        
         // Parse route to get action and controller
         if (empty($this->route) || $this->route == '/') {
             // Empty route
@@ -155,6 +156,10 @@ class Crayd_Route {
                     $this->forceView = true;
                     $this->forceDefault = true;
                     $used = 1;
+                } else if (file_exists($controllerDir . DS . 'indexController' . EXT) && method_exists('indexController', 'indexAction')) {
+                    // Index... should i really do this?
+                    $this->data->controller = 'index';
+                    $this->data->action = 'index';
                 } else {
                     // no view file found...
                     $this->data->controller = 'error';
@@ -163,7 +168,7 @@ class Crayd_Route {
                     $this->forceDefault = true;
                 }
             }
-
+            
             // Now parse variables
             $this->parseVariables($used);
         }
@@ -205,6 +210,8 @@ class Crayd_Route {
             // Ok is a section...
             // Now set the section as well as getting rid of the string
             $this->data->section = array_shift($this->data->segments);
+            global $section;
+            $section = $this->data->section;
             // Re-set the route if there are some segment left
             if (count($this->data->segments) > 0) {
                 // Still some segment left

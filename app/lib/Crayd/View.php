@@ -12,6 +12,9 @@ class Crayd_View {
     var $data;
     var $route;
     var $config;
+    var $dir;
+    var $layoutFile;
+    var $viewFile;
 
     /**
      * Routing function
@@ -21,24 +24,65 @@ class Crayd_View {
         // Pass needed configurations
         $this->config = Crayd_Registry::get('config')->view;
         $this->route = $route;
+        // Set directory
+        if (!empty($this->route->data->section)) {
+            $this->dir = Crayd_Registry::get('appDir') . DS . 'views' . DS . $this->route->data->section;
+        } else {
+            $this->dir = Crayd_Registry::get('appDir') . DS . 'views';
+        }
+
+        // Set filenames
+        $this->layoutFile = 'layout';
+        if (!empty($this->route->data->action)) {
+            $this->viewFile = $this->route->data->controller . '_' . $this->route->data->action;
+        } else {
+            $this->viewFile = $this->route->data->controller;
+        }
     }
 
+    /**
+     * Dispatches the layout...
+     */
     public function dispatchLayout() {
-        
+        if (substr($this->layoutFile, -3) != 'php') {
+            $filename = $this->layoutFile . '.php';
+        } else {
+            $filename = $this->layoutFile;
+        }
+
+        include($this->dir . DS . $filename);
     }
-    
+
+    /**
+     * Content caller
+     */
     public function content() {
-        
+        if (substr($this->viewFile, -3) != 'php') {
+            $filename = $this->viewFile . '.php';
+        } else {
+            $filename = $this->viewFile;
+        }
+
+        include($this->dir . DS . $filename);
     }
-    
-    public function setLayout() {
-        
+
+    /**
+     * Change layout file
+     */
+    public function setLayout($file) {
+        $this->layoutFile = $file;
     }
-    
-    public function setView() {
-        
+
+    /**
+     * Change view file
+     */
+    public function setView($file) {
+        $this->viewFile = $file;
     }
-    
+
+    /**
+     * Change include directory
+     */
     public function setDir() {
         
     }

@@ -1,4 +1,5 @@
 <?
+
 /**
  * Crayd Controller
  * 
@@ -13,61 +14,88 @@ class Crayd_Controller {
      * @var Crayd_View
      */
     var $view;
-    
     /**
      *
      * @var Crayd_Database
      */
     var $db;
-    
     /**
      *
      * @var Crayd_Route
      */
     var $route;
-    
     /**
      * 
      * @var mixed
      */
     var $config;
-    
+
     /**
      *
      * @param Crayd_Route $route 
      */
     public function __construct($route) {
         // Must do
-        header( 'Content-Type: text/html; charset=utf-8' );
+        header('Content-Type: text/html; charset=utf-8');
         // set the route
         $this->route = $route;
         $this->config = Crayd_Registry::get('config');
         // Session?
-        if($this->config->session) {
+        if ($this->config->session) {
             session_start();
         }
     }
-    
+
     /**
      * Dispatcher
      */
     public function dispatch() {
         // Get app directory
         $appDir = Crayd_Registry::get('appDir');
+
+        // Create view instance
+        $this->view = new Crayd_View($this->route);
+
         // Check for global preDispatch
-        if(file_exists($appDir . DS . 'globalPreDispatch' . EXT)) {
+        if (file_exists($appDir . DS . 'globalPreDispatch' . EXT)) {
             include_once($appDir . DS . 'globalPreDispatch' . EXT);
         }
-        // run preDispatch
+        // Run preDispatch
         $this->preDispatch();
-        
-        
-        // run postdispatch
+
+        // Create action name
+        $actionName = $this->route->data->action . 'Action';
+        // Method check b4 calling
+        if ($this->route->data->action != '' && method_exists($this, $actionName)) {
+            // Method exist, call it
+            $this->actionName();
+        } else {
+            // Doesnt exist, call error handler
+            if ($this->route->forceView) {
+                // Do nothing
+            } else {
+                // Show error ?
+                $this->errorAction();
+                $this->view->setView($this->route->data->controller . '_error');
+            }
+        }
+
+        // Run postDispatch
         $this->postDispatch();
-        // global postdispatch
-        if(file_exists($appDir . DS . 'globalPostDispatch' . EXT)) {
+        // Global postDispatch
+        if (file_exists($appDir . DS . 'globalPostDispatch' . EXT)) {
             include_once($appDir . DS . 'globalPostDispatch' . EXT);
         }
+        
+        // Dispatch layout
+        $this->view->dispatchLayout();
+    }
+
+    /**
+     * Request object handler
+     * @return Crayd_Request 
+     */
+    public function getRequest() {
         
     }
     
@@ -78,4 +106,5 @@ class Crayd_Controller {
     public function postDispatch() {
         
     }
+
 }
