@@ -24,7 +24,7 @@ $config->route->enableCustomRoute = false;
 /**
  * Enables section if array is entered
  */
-$config->route->sections = array('about');
+$config->route->sections = array();
 
 #######
 ## View class configuration
@@ -37,7 +37,7 @@ $config->view->baseHref = '';
 $config->db->host = '';
 $config->db->username = '';
 $config->db->password = '';
-$config->db->name = '';
+$config->db->database = '';
 $config->db->debug = true;
 
 #######

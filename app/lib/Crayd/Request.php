@@ -123,7 +123,12 @@ class Crayd_Request {
     );
 
     public function __construct($route) {
-// Generate param...
+        // Generate param...
+        if (is_array($route->data->variables)) {
+            $this->params = array_merge($_GET, $route->data->variables, $_POST);
+        } else {
+            $this->params = array_merge($_GET, $_POST);
+        }
     }
 
     /**
@@ -187,14 +192,26 @@ class Crayd_Request {
      * @param mixed $default 
      */
     public function getParam($key, $default = null) {
-        
+        if (!empty($this->params[$key])) {
+            return $this->params[$key];
+        }
+        return $default;
     }
 
     /**
      * Returns all params from paired urls
      */
     public function getAllParams() {
-        
+        return $this->params;
+    }
+
+    /**
+     * Cross-action..
+     * @param string $key
+     * @param mixed $value 
+     */
+    public function setParam($key, $value) {
+        $this->params[$key] = $value;
     }
 
     public function sendHeader($code) {
