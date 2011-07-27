@@ -31,8 +31,8 @@ class Crayd_Cache {
     public function __construct() {
         // gets config.php & route.php mtime, pretty much saves time i guess
         $appDir = Crayd_Registry::get('appDir');
-        $this->configmtime = filemtime($frameworkdir . '/config.php');
-        $this->routemtime = filemtime($frameworkdir . '/route.php');
+        $this->configmtime = filemtime($appDir . '/config.php');
+        $this->routemtime = filemtime($appDir . '/route.php');
         $this->cacheDir = $appDir . DS . 'cache';
     }
 

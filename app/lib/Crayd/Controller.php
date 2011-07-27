@@ -156,6 +156,10 @@ class Crayd_Controller {
     public function _getParam($key, $default = null) {
         return $this->getRequest()->getParam($key, $default);
     }
+    
+    public function _getSegments() {
+        return $this->route->data->segments;
+    }
 
     public function preDispatch() {
         
