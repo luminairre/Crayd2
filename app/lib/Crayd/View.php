@@ -10,6 +10,7 @@
 class Crayd_View {
 
     var $data;
+    var $_data;
     var $route;
     var $config;
     var $dir;
@@ -50,7 +51,9 @@ class Crayd_View {
             $filename = $this->layoutFile;
         }
 
-        include($this->dir . DS . $filename);
+        if (file_exists($this->dir . DS . $filename)) {
+            include($this->dir . DS . $filename);
+        }
     }
 
     /**
@@ -62,8 +65,9 @@ class Crayd_View {
         } else {
             $filename = $this->viewFile;
         }
-
-        include($this->dir . DS . $filename);
+        if (file_exists($this->dir . DS . $filename)) {
+            include($this->dir . DS . $filename);
+        }
     }
 
     /**

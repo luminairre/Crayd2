@@ -85,7 +85,7 @@ class Crayd_Helper {
      * @param string $characters
      * @return string
      */
-    public function generateRandom($lengthchar, $characters='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890__') {
+    static public function generateRandom($lengthchar, $characters='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890__') {
         srand((double) microtime() * 1000000);
         $i = 0;
         $pass = '';
