@@ -62,6 +62,15 @@ if (empty($_GET['_route']) && (!empty($_SERVER['PATH_INFO']) || !empty($_SERVER[
         $_temp = $_temp[1];
         $_GET['_route'] = substr($_temp, 1);
     }
+} else {
+    // Handler for ?_route=blablabla?var=value 
+    if(strpos($_GET['_route'], '?') !== false) {
+        $_temp = explode('?', $_GET['_route']);
+        $_GET['_route'] = $_temp[0];
+        $_temp = explode('=', $_temp);
+        $_GET[$_temp[0]] = $_temp[1];
+        unset($_temp);
+    }
 }
 // Init route
 $route = new Crayd_Route($_GET['_route']);
