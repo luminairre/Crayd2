@@ -93,7 +93,7 @@ class Crayd_Route {
             // Set default action
             // dunno but i just feel that i have to set here..
             if ($segments[1] != '') {
-                $this->data->action = $segments[0];
+                $this->data->action = $segments[1];
             } else {
                 $this->data->action = 'index';
             }
