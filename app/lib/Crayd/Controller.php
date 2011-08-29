@@ -36,6 +36,12 @@ class Crayd_Controller {
     var $request;
 
     /**
+     * 
+     * @var Crayd_Auth
+     */
+    var $auth;
+    
+    /**
      *
      * @param Crayd_Route $route 
      */
@@ -111,9 +117,11 @@ class Crayd_Controller {
      * @param string $url 
      */
     public function _redirect($url) {
-        if (strpos($url, 'tp://') !== false) {
-            $url = $this->config->view->baseHref . $url;
+        
+        if (strpos($url, 'tp://') === false) {
+            $url = $this->view->config->baseHref . $url;
         }
+        
         header('Location: ' . $url);
         exit;
     }
