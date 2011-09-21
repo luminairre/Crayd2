@@ -75,7 +75,12 @@ class Crayd_View {
      * @param string $file 
      */
     public function partial($file) {
-         include($this->dir . DS . $file);
+		if (substr($file, -3) != 'php') {
+            $filename = $file . '.php';
+        } else {
+            $filename = $file;
+        }
+         include($this->dir . DS . $filename);
     }
     
     /**
