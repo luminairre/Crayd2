@@ -71,6 +71,14 @@ class Crayd_View {
     }
 
     /**
+     * Includer
+     * @param string $file 
+     */
+    public function partial($file) {
+         include($this->dir . DS . $file);
+    }
+    
+    /**
      * Change layout file
      */
     public function setLayout($file) {
