@@ -238,7 +238,7 @@ class Crayd_Database {
         if ($result) {
             // is valid then..
             return $result;
-        } else if ($this->config->showErrors) {
+        } else if ($this->config->debug) {
             $debug = debug_backtrace();
             $output = "
                 " . mysqli_error($this->conn) . "<br>
