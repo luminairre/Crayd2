@@ -103,7 +103,7 @@ class Crayd_Database {
                 }
             }
         }
-
+        $data = $this->clean($data);
         return $this->insert($table, $data);
     }
 
@@ -128,7 +128,9 @@ class Crayd_Database {
                 }
             }
         }
-
+        
+        //protect
+        $data = $this->clean($data);
         $this->update($table, $data, $where);
     }
 
