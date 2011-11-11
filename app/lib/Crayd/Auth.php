@@ -17,7 +17,7 @@
  *   Description: Stores user's actions to tables, such as vote etc
  *   Needed columns: id, user_id, table_id, table_name, created, updated, action, content
  * 
- * 06/08/10 14:21
+ * TODO: Revamp logging system, as well as data system, might use EAV instead
  */
 class Crayd_Auth {
 
@@ -49,7 +49,7 @@ class Crayd_Auth {
             // try to find the user
             $sql = "
                 SELECT *
-                FROM " . $this->config->table->identity . "
+                FROM " . $this->config->table->member . "
                 WHERE id = $id
                     ";
             $result = $this->db->fetchRow($sql);
@@ -143,7 +143,7 @@ class Crayd_Auth {
 
         $sql = "
             SELECT *
-            FROM " . $this->config->table->identity . "
+            FROM " . $this->config->table->member . "
             WHERE (username = '$username' OR email = '$username')
             AND password = '$password'
         ";
