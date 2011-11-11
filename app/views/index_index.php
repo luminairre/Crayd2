@@ -1,1 +1,1 @@
-Hello World!
+<?= $this->var ?>
