@@ -66,13 +66,8 @@ if (empty($_GET['_route']) && (!empty($_SERVER['PATH_INFO']) || !empty($_SERVER[
     // Handler for ?_route=blablabla?var=value 
     if(strpos($_SERVER['REQUEST_URI'], '?') !== false) {
         $_temp = explode('?', $_SERVER['REQUEST_URI']);
-        $_temp = explode('&', $_temp[1]);
-		foreach($_temp as $value) {
-			$_temp2 = explode('=', $value);
-			$_GET[$_temp2[0]] = $_temp2[1];
-		}
+        parse_str($_temp[1], $_GET);
         unset($_temp);
-		unset($_temp2);
     }
 }
 // Init route
