@@ -28,9 +28,13 @@ class Crayd_Database {
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct($cfg = null) {
         // Delegate config
-        $this->config = Crayd_Registry::get('config')->db;
+        if($cfg != null) {
+          $this->config = $cfg;
+        } else {
+          $this->config = Crayd_Registry::get('config')->db;
+        }
         // Generate connection
         if ($this->conn == null) {
             $this->conn = new mysqli($this->config->host, $this->config->username, $this->config->password, $this->config->database);
