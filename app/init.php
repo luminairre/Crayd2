@@ -43,6 +43,14 @@ function __autoload($className) {
         // check.. sadly.. no exception...
         if (file_exists($appDir . DS . 'lib' . DS . $classFile . EXT)) {
             include_once($appDir . DS . 'lib' . DS . $classFile . EXT);
+        } else if(file_exists ($appDir . DS . 'models' . DS . $className . EXT)) { // Add no "Model" prefix class name support
+            include_once($appDir . DS . 'models' . DS . $className . EXT);
+        } else {
+            // Debugger test
+            if(Crayd_Registry::get('config')->debug) {
+                echo '<!-- Class doesnt exist: ' . $className . '-->';
+                exit;
+            }
         }
     }
 }
