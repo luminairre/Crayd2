@@ -12,6 +12,20 @@ if (!defined('INFRAMEWORK')) {
     exit;
 }
 
+/**
+ * Debugger...
+ * @param string $message 
+ */
+function iQuit($message) {
+    // validate setting again
+    if (Crayd_Registry::get('config')->debug) {
+        echo '<!-- ' . $message . ' -->';
+        exit;
+    } else {
+        return true;
+    }
+}
+
 // Initialize autoload
 function __autoload($className) {
     global $appDir, $section;
@@ -43,14 +57,11 @@ function __autoload($className) {
         // check.. sadly.. no exception...
         if (file_exists($appDir . DS . 'lib' . DS . $classFile . EXT)) {
             include_once($appDir . DS . 'lib' . DS . $classFile . EXT);
-        } else if(file_exists ($appDir . DS . 'models' . DS . $className . EXT)) { // Add no "Model" prefix class name support
+        } else if (file_exists($appDir . DS . 'models' . DS . $className . EXT)) { // Add no "Model" prefix class name support
             include_once($appDir . DS . 'models' . DS . $className . EXT);
         } else {
             // Debugger test
-            if(Crayd_Registry::get('config')->debug) {
-                echo '<!-- Class doesnt exist: ' . $className . '-->';
-                exit;
-            }
+            iQuit('Class doesnt exist: ' . $className);
         }
     }
 }
@@ -72,7 +83,7 @@ if (empty($_GET['_route']) && (!empty($_SERVER['PATH_INFO']) || !empty($_SERVER[
     }
 } else {
     // Handler for ?_route=blablabla?var=value 
-    if(strpos($_SERVER['REQUEST_URI'], '?') !== false) {
+    if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
         $_temp = explode('?', $_SERVER['REQUEST_URI']);
         parse_str($_temp[1], $_GET);
         unset($_temp);

@@ -58,4 +58,4 @@ $config->debug = true;
 /**
  * Turns on session
  */
-$config->session = false;
+$config->session = true;
