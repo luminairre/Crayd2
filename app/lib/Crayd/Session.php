@@ -36,5 +36,24 @@ class Crayd_Session {
 
         $_SESSION[$key] = $value;
     }
+    
+    /**
+     * One-time use only
+     * @param string $key
+     * @param mixed $value 
+     */
+    static public function flash($key, $value = '') {
+        if (!Crayd_Registry::get('config')->session) {
+            iQuit('Session is not enabled');
+        }
+        
+        if($value != '') {
+            $_SESSION[$key] = $value;
+        } else {
+            $temp = $_SESSION[$key];
+            unset($_SESSION[$key]);
+            return $temp;
+        }
+    }
 
 }
