@@ -172,6 +172,12 @@ class Crayd_Route {
             // Now parse variables
             $this->parseVariables($used);
         }
+        
+        // Move others
+        $_REQUEST['_segments'] = $this->data->segments;
+        if($this->data->section != '') $_REQUEST['_section'] = $this->data->section;
+        $_REQUEST['_action'] = $this->data->action;
+        $_REQUEST['_controller'] = $this->data->controller;
     }
 
     /**
@@ -191,12 +197,6 @@ class Crayd_Route {
             }
             $this->data->variables = $variables;
         }
-        
-        // Move others
-        $_REQUEST['_segments'] = $this->data->segments;
-        if($this->data->section != '') $_REQUEST['_section'] = $this->data->section;
-        $_REQUEST['_action'] = $this->data->action;
-        $_REQUEST['_controller'] = $this->data->controller;
     }
 
     /**
@@ -222,5 +222,4 @@ class Crayd_Route {
             }
         }
     }
-
 }
