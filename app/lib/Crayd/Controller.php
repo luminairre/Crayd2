@@ -165,18 +165,31 @@ class Crayd_Controller {
         return $this->getRequest()->getParam($key, $default);
     }
     
+    /**
+     * Returns segments, numbered from 0
+     * @return array
+     */
     public function _getSegments() {
         return $this->route->data->segments;
     }
 
+    /**
+     * This function is always run before Action() 
+     */
     public function preDispatch() {
         
     }
 
+    /**
+     * This function is always run after Action() 
+     */
     public function postDispatch() {
         
     }
     
+    /**
+     *Default error catcher 
+     */
     public function errorAction() {
         
     }
