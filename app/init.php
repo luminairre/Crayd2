@@ -85,7 +85,10 @@ if (empty($_GET['_route']) && (!empty($_SERVER['PATH_INFO']) || !empty($_SERVER[
     // Handler for ?_route=blablabla?var=value 
     if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
         $_temp = explode('?', $_SERVER['REQUEST_URI']);
-        parse_str($_temp[1], $_GET);
+        parse_str($_temp[1], $ar);
+        $_GET = array_merge($_GET, $ar);
+        $_REQUEST = array_merge($_REQUEST, $ar);
+        unset($ar);
         unset($_temp);
     }
 }
