@@ -34,6 +34,9 @@ class Crayd_Cache {
         $this->configmtime = filemtime($appDir . '/config.php');
         $this->routemtime = filemtime($appDir . '/route.php');
         $this->cacheDir = $appDir . DS . 'cache';
+        if (!file_exists($this->cacheDir)) {
+            mkdir($this->cacheDir, 0777);
+        }
     }
 
     /**
@@ -51,7 +54,7 @@ class Crayd_Cache {
      * @param mixed $var
      */
     public function set($key, $var, $group = 'cache') {
-        $key = md5($key);
+        $key = Crayd_Helper::alnum($key);
         $mtime = $this->configmtime . $this->routemtime;
         $filename = $this->cacheDir . DS . $group . '-' . $key . '-' . $mtime . '.php';
         // set store variables
@@ -74,16 +77,25 @@ class Crayd_Cache {
      * Clears cache, if group is undefined then all cache will be cleared
      * @param string $group 
      */
-    public function clear($group = null) {
+    public function clear($key = null, $group = null) {
         $handle = opendir($this->cacheDir);
+        $key = Crayd_Helper::alnum($key);
         while (false !== ($file = readdir($handle))) {
             if ($file != "." && $file != "..") {
-                if ($group != null) {
-                    if (strpos($file, $group . '-')) {
+                if ($key == null && $group == null) {
+                    unlink($this->cacheDir . DS . $file);
+                } else if ($group == null) {
+                    if (strpos($file, $key) !== false) {
+                        unlink($this->cacheDir . DS . $file);
+                    }
+                } else if ($key == null) {
+                    if (strpos($file, $group) !== false) {
                         unlink($this->cacheDir . DS . $file);
                     }
                 } else {
-                    unlink($this->cacheDir . DS . $file);
+                    if (strpos($file, $group . '-' . $key) !== false) {
+                        unlink($this->cacheDir . DS . $file);
+                    }
                 }
             }
         }
@@ -96,7 +108,7 @@ class Crayd_Cache {
      * @return mixed
      */
     public function get($key, $group = 'cache') {
-        $key = md5($key);
+        $key = Crayd_Helper::alnum($key);
         $mtime = $this->configmtime . $this->routemtime;
         $filename = $this->cacheDir . DS . $group . '-' . $key . '-' . $mtime . '.php';
 
@@ -111,6 +123,7 @@ class Crayd_Cache {
             if ($data['timestamp'] > $_SERVER['REQUEST_TIME'] - $this->expire) {
                 return $data['data'];
             } else {
+                $this->clear($key, $group);
                 return false;
             }
         } else {
