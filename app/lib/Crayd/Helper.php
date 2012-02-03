@@ -85,7 +85,7 @@ class Crayd_Helper {
      * @param string $characters
      * @return string
      */
-    static public function generateRandom($lengthchar, $characters='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890__') {
+    static public function generateRandom($lengthchar, $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890__') {
         srand((double) microtime() * 1000000);
         $i = 0;
         $pass = '';
@@ -111,6 +111,59 @@ class Crayd_Helper {
         $new_string = str_replace('---', '-', $new_string);
         $new_string = str_replace('--', '-', $new_string);
         return $new_string;
+    }
+
+    /**
+     * Validates $var
+     * Methods are: required, alnum, array, email, max, min, url
+     * Values are array, for now its
+     *   max => integer
+     *   min => integer
+     * @param mixed $var
+     * @param array $methods 
+     * @param array $values
+     * @return boolean
+     */
+    public static function validate($var, $methods, $values = array()) {
+
+        if (in_array('required', $methods)) {
+            if (empty($var))
+                return false;
+        }
+
+        if (in_array('array', $methods)) {
+            if (!is_array($var))
+                return false;
+            if (count($var) < 1)
+                return false;
+        }
+
+        if (in_array('email', $methods) && isset($var)) {
+            if (!filter_var($var, FILTER_VALIDATE_EMAIL))
+                return false;
+        }
+
+        if (in_array('max', $methods) && isset($values['max']) && isset($var)) {
+            if ($var > $values['max'])
+                return false;
+        }
+
+        if (in_array('min', $methods) && isset($values['min']) && isset($var)) {
+            if ($var < $values['min'])
+                return false;
+        }
+
+        if (in_array('url', $methods) && isset($var)) {
+            if (!filter_var($var, FILTER_VALIDATE_URL))
+                return false;
+        }
+
+        if (in_array('alnum', $methods) && isset($var)) {
+            if (preg_match("/^[A-Za-z0-9]+$/", $var) < 1)
+                return false;
+        }
+
+        return true;
     }
 
 }
