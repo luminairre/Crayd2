@@ -109,7 +109,7 @@ class Crayd_Auth {
             $cookie = serialize($cookie);
             // expire
             $expire = time() + ( 60 * $expire );
-            setcookie('vee_var' . $this->config->uniqueID, $cookie, $expire, '/');
+            setcookie('vee_var' . $this->config->uniqueID, $cookie, $expire, '/', $this->config->domain);
             return true;
         } else {
             return -2;
@@ -129,7 +129,7 @@ class Crayd_Auth {
         $cookie = serialize($cookie);
         // expire
         $expire = time() + ( 60 * $expire );
-        setcookie('vee_var' . $this->config->uniqueID, $cookie, $expire, '/');
+        setcookie('vee_var' . $this->config->uniqueID, $cookie, $expire, '/', $this->config->domain);
     }
 
     /**
