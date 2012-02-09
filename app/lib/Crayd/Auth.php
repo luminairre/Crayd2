@@ -121,12 +121,15 @@ class Crayd_Auth {
      * Needs login info from outer source 
      * id, username, and created
      */
-    public function forceLogin($login) {
+    public function forceLogin($login, $expire = null) {
         // set cookie data
         $cookie['sessid'] = $login['id'];
         $cookie['sessname'] = md5($login['username']);
         $cookie['sessdate'] = md5($login['created']);
         $cookie = serialize($cookie);
+        if ($expire == null) {
+            $expire = 60 * 24 * 30;
+        }
         // expire
         $expire = time() + ( 60 * $expire );
         setcookie('vee_var' . $this->config->uniqueID, $cookie, $expire, '/', $this->config->domain);
