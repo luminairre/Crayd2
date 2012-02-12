@@ -25,6 +25,10 @@ $config->route->enableCustomRoute = false;
  * Enables section if array is entered
  */
 $config->route->sections = array();
+/**
+ * Namespace, section like container, but not URL-effected 
+ */
+$config->route->namespace = null;
 
 #######
 ## View class configuration

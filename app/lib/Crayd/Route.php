@@ -16,7 +16,7 @@ class Crayd_Route {
     var $config;
     /**
      * Store processed data
-     * @var array
+     * @var object
      */
     var $data;
     /**
@@ -61,6 +61,10 @@ class Crayd_Route {
         $viewDir = $appDir . DS . 'views';
         // Used segment
         $used = 0;
+        // Namespace detection
+        if(!empty($this->config->namespace)) {
+            $appDir = $appDir . DS . $this->config->namespace;
+        }
         // Section detection
         if (!(empty($this->route) || $this->route == '/') && is_array($this->config->sections) && count($this->config->sections)) {
             $this->detectSection();
