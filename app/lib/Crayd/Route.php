@@ -14,21 +14,25 @@ class Crayd_Route {
      * @var mixed
      */
     var $config;
+
     /**
      * Store processed data
      * @var object
      */
     var $data;
+
     /**
      * Route string
      * @var string
      */
     var $route;
+
     /**
      * Forces default controller to load
      * @var boolean
      */
     var $forceDefault = false;
+
     /**
      * Forces view file without controller
      * @var boolean
@@ -61,20 +65,38 @@ class Crayd_Route {
         $viewDir = $appDir . DS . 'views';
         // Used segment
         $used = 0;
-        // Namespace detection
-        if(!empty($this->config->namespace)) {
-            $appDir = $appDir . DS . $this->config->namespace;
+        // Namespace detection 
+        if (!empty($this->config->namespace)) {
+            global $namespace;
+            $this->data->namespace = $namespace = $this->config->namespace;
         }
+
         // Section detection
         if (!(empty($this->route) || $this->route == '/') && is_array($this->config->sections) && count($this->config->sections)) {
             $this->detectSection();
-            $controllerDir = $appDir . DS . 'controllers' . DS . $this->data->section;
-            $viewDir = $appDir . DS . 'views' . DS . $this->data->section;
+            $controllerDir = $appDir . DS . 'controllers';
+            $viewDir = $appDir . DS . 'views';
+            // Namespace detection
+            if (!empty($this->config->namespace)) {
+                $controllerDir .= DS . $this->config->namespace;
+                $viewDir .= DS . $this->config->namespace;
+            }
+            $controllerDir .= DS . $this->data->section;
+            $viewDir .= DS . $this->data->section;
         } else if (!empty($this->route) && $this->route != '/') {
             // No section detected, just get the segments if exists
             $this->data->segments = explode('/', $this->route);
+            if (!empty($this->config->namespace)) {
+                $controllerDir .= DS . $this->config->namespace;
+                $viewDir .= DS . $this->config->namespace;
+            }
+        } else {
+            if (!empty($this->config->namespace)) {
+                $controllerDir .= DS . $this->config->namespace;
+                $viewDir .= DS . $this->config->namespace;
+            }
         }
-        
+
         // Parse route to get action and controller
         if (empty($this->route) || $this->route == '/') {
             // Empty route
@@ -172,14 +194,17 @@ class Crayd_Route {
                     $this->forceDefault = true;
                 }
             }
-            
+
             // Now parse variables
             $this->parseVariables($used);
         }
-        
+
         // Move others
         $_REQUEST['_segments'] = $this->data->segments;
-        if($this->data->section != '') $_REQUEST['_section'] = $this->data->section;
+        if (!empty($this->data->section))
+            $_REQUEST['_section'] = $this->data->section;
+        if (!empty($this->data->namespace))
+            $_REQUEST['_namespace'] = $this->data->namespace;
         $_REQUEST['_action'] = $this->data->action;
         $_REQUEST['_controller'] = $this->data->controller;
     }
@@ -194,9 +219,9 @@ class Crayd_Route {
             // Some segment left...
             $segments = $this->data->segments;
             $usedCount = $used;
-            for($i = $usedCount; $i < $segmentCount; $i++) {
-                $variables[$segments[$i]] = $segments[$i+1];
-                $_GET[$segments[$i]] = $segments[$i+1];
+            for ($i = $usedCount; $i < $segmentCount; $i++) {
+                $variables[$segments[$i]] = $segments[$i + 1];
+                $_GET[$segments[$i]] = $segments[$i + 1];
                 $i++;
             }
             $this->data->variables = $variables;
@@ -226,4 +251,5 @@ class Crayd_Route {
             }
         }
     }
+
 }

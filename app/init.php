@@ -28,18 +28,30 @@ function iQuit($message) {
 
 // Initialize autoload
 function __autoload($className) {
-    global $appDir, $section;
+    global $appDir, $section, $namespace;
     // Parse class name to determine include file
     if (strpos($className, 'Controller') !== false && strpos($className, '_Controller') === false) {
         // Is controller
         // Do the section detection...
-        if ($section != null) {
-            if (file_exists($appDir . DS . 'controllers' . DS . $section . DS . $className . EXT)) {
-                include_once($appDir . DS . 'controllers' . DS . $section . DS . $className . EXT);
+        if (!empty($section)) {
+            if (!empty($namespace)) {
+                if (file_exists($appDir . DS . 'controllers' . DS . $namespace . DS . $section . DS . $className . EXT)) {
+                    include_once($appDir . DS . 'controllers' . DS . $namespace . DS . $section . DS . $className . EXT);
+                }
+            } else {
+                if (file_exists($appDir . DS . 'controllers' . DS . $section . DS . $className . EXT)) {
+                    include_once($appDir . DS . 'controllers' . DS . $section . DS . $className . EXT);
+                }
             }
         } else {
-            if (file_exists($appDir . DS . 'controllers' . DS . $className . EXT)) {
-                include_once($appDir . DS . 'controllers' . DS . $className . EXT);
+            if (!empty($namespace)) {
+                if (file_exists($appDir . DS . 'controllers' . DS . $namespace . DS . $className . EXT)) {
+                    include_once($appDir . DS . 'controllers' . DS . $namespace . DS . $className . EXT);
+                }
+            } else {
+                if (file_exists($appDir . DS . 'controllers' . DS . $className . EXT)) {
+                    include_once($appDir . DS . 'controllers' . DS . $className . EXT);
+                }
             }
         }
     } else if (strpos($className, 'Model') !== false) {

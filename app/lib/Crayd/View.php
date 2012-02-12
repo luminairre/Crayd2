@@ -27,9 +27,16 @@ class Crayd_View {
         $this->route = $route;
         // Set directory
         if (!empty($this->route->data->section)) {
-            $this->dir = Crayd_Registry::get('appDir') . DS . 'views' . DS . $this->route->data->section;
+            $this->dir = Crayd_Registry::get('appDir') . DS . 'views';
+            if (!empty($this->route->data->namespace)) {
+                $this->dir .= DS . $this->route->data->namespace;
+            }
+            $this->dir .= DS . $this->route->data->section;
         } else {
             $this->dir = Crayd_Registry::get('appDir') . DS . 'views';
+            if (!empty($this->route->data->namespace)) {
+                $this->dir .= DS . $this->route->data->namespace;
+            }
         }
 
         // Set filenames
@@ -75,14 +82,14 @@ class Crayd_View {
      * @param string $file 
      */
     public function partial($file) {
-		if (substr($file, -3) != 'php') {
+        if (substr($file, -3) != 'php') {
             $filename = $file . '.php';
         } else {
             $filename = $file;
         }
-         include($this->dir . DS . $filename);
+        include($this->dir . DS . $filename);
     }
-    
+
     /**
      * Change layout file
      */
