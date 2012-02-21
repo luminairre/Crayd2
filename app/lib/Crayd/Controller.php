@@ -118,7 +118,7 @@ class Crayd_Controller {
      */
     public function _redirect($url) {
         
-        if (strpos($url, 'tp://') === false) {
+        if (strpos($url, '://') === false) {
             $url = $this->view->config->baseHref . $url;
         }
         
