@@ -14,7 +14,7 @@ define('INFRAMEWORK', TRUE);
 // Initialize variables
 define('DS', DIRECTORY_SEPARATOR);
 define('EXT', '.php');
-global $root, $appFolder;
+global $root, $appDir;
 $root = dirname(__FILE__);
 // App folder config
 $appDir = $root . DS . 'app';
