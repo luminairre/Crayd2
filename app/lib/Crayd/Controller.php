@@ -46,15 +46,9 @@ class Crayd_Controller {
      * @param Crayd_Route $route 
      */
     public function __construct($route) {
-        // Must do
-        header('Content-Type: text/html; charset=utf-8');
         // set the route
         $this->route = $route;
         $this->config = Crayd_Registry::get('config');
-        // Session?
-        if ($this->config->session) {
-            session_start();
-        }
         // Request object
         $this->request = new Crayd_Request($route);
     }
