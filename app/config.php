@@ -34,6 +34,7 @@ $config->route->namespace = null;
 ## View class configuration
 #######
 $config->view->baseHref = '';
+$config->view->sendHeader = true;
 
 #######
 ## Database configuration

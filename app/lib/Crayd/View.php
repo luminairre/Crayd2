@@ -52,6 +52,15 @@ class Crayd_View {
      * Dispatches the layout...
      */
     public function dispatchLayout() {
+        // Send header
+        if ($this->config->sendHeader) {
+            // Must do
+            header('Content-Type: text/html; charset=utf-8');
+        }
+        // Session?
+        if (Crayd_Registry::get('config')->session) {
+            session_start();
+        }
         if (substr($this->layoutFile, -3) != 'php') {
             $filename = $this->layoutFile . '.php';
         } else {

@@ -43,15 +43,10 @@ class Crayd_Route {
      * Constructor
      * @param string 
      */
-    public function __construct($route) {
-        // Must do
-        header('Content-Type: text/html; charset=utf-8');
+    public function __construct($route) {        
         // Get config from registry
         $this->config = Crayd_Registry::get('config')->route;
-        // Session?
-        if (Crayd_Registry::get('config')->session) {
-            session_start();
-        }
+
         // route
         $this->route = $route;
         if ($this->config->enableCustomRoute) {
