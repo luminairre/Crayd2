@@ -50,7 +50,7 @@ class Crayd_Database {
      * @return array
      */
     public function fetchAll($sql, $idAsKey = false, $columnKey = null) {
-        //$sql = addslashes($sql);
+        //$sql = $this->clean($sql);
         // queries
         $query = $this->_query($sql);
         if ($query) {
@@ -80,7 +80,7 @@ class Crayd_Database {
      * @param string $sql
      */
     public function fetchRow($sql) {
-        //$sql = addslashes($sql);
+        //$sql = $this->clean($sql);
         $query = $this->_query($sql);
         $row = $query->fetch_assoc();
         $query->free_result();
@@ -156,7 +156,7 @@ class Crayd_Database {
                 $values .= "'" . $value . "'";
             }
             $sql = "
-            INSERT INTO " . addslashes($table) . " ($keys) VALUES ($values)
+            INSERT INTO " . $this->clean($table) . " ($keys) VALUES ($values)
                 ";
             $this->_query($sql);
             $id = $this->conn->insert_id;
@@ -177,9 +177,9 @@ class Crayd_Database {
             foreach ($array as $key => $value) {
                 if ($sets != '')
                     $sets .= ', ';
-                $sets .= '`' . addslashes($key) . '` = ';
+                $sets .= '`' . $this->clean($key) . '` = ';
                 if (!is_numeric($value)) {
-                    $sets .= "'" . addslashes($value) . "'";
+                    $sets .= "'" . $this->clean($value) . "'";
                 } else {
                     $sets .= $value;
                 }
@@ -187,7 +187,7 @@ class Crayd_Database {
             if ($where != '')
                 $where = " WHERE $where";
             $sql = "
-            UPDATE " . addslashes($table) . " SET
+            UPDATE " . $this->clean($table) . " SET
                 $sets
                 $where
                 ";
@@ -208,7 +208,7 @@ class Crayd_Database {
         if ($where != '')
             $where = " WHERE $where";
         $sql = "
-            DELETE FROM " . addslashes($table) . "  $where
+            DELETE FROM " . $this->clean($table) . "  $where
             ";
         $this->_query($sql);
     }
