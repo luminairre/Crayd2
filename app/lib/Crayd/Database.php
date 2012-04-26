@@ -30,10 +30,10 @@ class Crayd_Database {
      */
     public function __construct($cfg = null) {
         // Delegate config
-        if($cfg != null) {
-          $this->config = $cfg;
+        if ($cfg != null) {
+            $this->config = $cfg;
         } else {
-          $this->config = Crayd_Registry::get('config')->db;
+            $this->config = Crayd_Registry::get('config')->db;
         }
         // Generate connection
         if ($this->conn == null) {
@@ -132,7 +132,7 @@ class Crayd_Database {
                 }
             }
         }
-        
+
         //protect
         $data = $this->clean($data);
         $this->update($table, $data, $where);
@@ -141,26 +141,78 @@ class Crayd_Database {
     /**
      * Inserts into table
      * @param string $table
-     * @param array $array
+     * @param array $data
+     * @param array $allowed
      */
-    public function insert($table, $array) {
-        if (count($array) > 0) {
-
-            foreach ($array as $key => $value) {
-                if ($keys != '')
-                    $keys .= ', ';
-                $keys .= '`' . $key . '`';
-                if ($values != '')
-                    $values .= ',';
-
-                $values .= "'" . $value . "'";
+    public function insert($table, $data, $allowed = array()) {
+        if (count($data) > 0) {
+            $table = $this->clean($table);
+            // get column names
+            $columns = $this->getColumns($table);
+            if (count($allowed) > 0 && is_array($allowed)) {
+                $validateAllow = true;
+                $allowed = array_flip($allowed);
             }
-            $sql = "
-            INSERT INTO " . $this->clean($table) . " ($keys) VALUES ($values)
-                ";
-            $this->_query($sql);
-            $id = $this->conn->insert_id;
-            return $id;
+
+            foreach ($columns as $key => $value) {
+                if (isset($data[$key])) {
+                    if ($validateAllow) {
+                        if (isset($allowed[$key])) {
+                            $set[] = $key;
+                            $values[] = $data[$key];
+                            switch ($value) {
+                                case 'int':
+                                    $types .= 'i';
+                                    break;
+                                case 'float':
+                                case 'double':
+                                    $types .= 'd';
+                                    break;
+                                default:
+                                    $types .= 's';
+                            }
+                            $count[] = '?';
+                        }
+                    } else {
+                        $set[] = $key;
+                        $values[] = $data[$key];
+                        switch ($value) {
+                            case 'int':
+                                $types .= 'i';
+                                break;
+                            case 'float':
+                            case 'double':
+                                $types .= 'd';
+                                break;
+                            default:
+                                $types .= 's';
+                        }
+                        $count[] = '?';
+                    }
+                }
+            }
+
+            $sql = "INSERT INTO {$table} (`" . implode('`,`', $set) . "`) VALUES (" . implode(',', $count) . ")";
+
+            $stmt = $this->conn->prepare($sql);
+            if ($stmt) {
+                $param[] = $stmt;
+                $param[] = $types;
+
+                foreach ($values as $key => $value) {
+                    $param[] = &$values[$key];
+                }
+
+                call_user_func_array('mysqli_stmt_bind_param', $param);
+
+                $stmt->execute();
+                $stmt->close();
+                $id = $this->conn->insert_id;
+                return $id;
+            } else {
+                $this->error();
+                return false;
+            }
         } else {
             return false;
         }
@@ -169,34 +221,92 @@ class Crayd_Database {
     /**
      * Update table
      * @param string $table
-     * @param array $array
-     * @param string $where
+     * @param array $data
+     * @param array $allowed
      */
-    public function update($table, $array, $where = '') {
-        if (count($array) > 0) {
-            foreach ($array as $key => $value) {
-                if ($sets != '')
-                    $sets .= ', ';
-                $sets .= '`' . $this->clean($key) . '` = ';
-                if (!is_numeric($value)) {
-                    $sets .= "'" . $this->clean($value) . "'";
-                } else {
-                    $sets .= $value;
+    public function update($table, $data, $where, $allowed = array()) {
+        if (count($data) > 0) {
+            $table = $this->clean($table);
+            // get column names
+            $columns = $this->getColumns($table);
+            if (count($allowed) > 0 && is_array($allowed)) {
+                $validateAllow = true;
+                $allowed = array_flip($allowed);
+            }
+
+            foreach ($columns as $key => $value) {
+                if (isset($data[$key])) {
+                    if ($validateAllow) {
+                        if (isset($allowed[$key])) {
+                            $set[] = "`$key` = ?";
+                            $values[] = $data[$key];
+                            switch ($value) {
+                                case 'int':
+                                    $types .= 'i';
+                                    break;
+                                case 'float':
+                                case 'double':
+                                    $types .= 'd';
+                                    break;
+                                default:
+                                    $types .= 's';
+                            }
+                            $count[] = '?';
+                        }
+                    } else {
+                        $set[] = "`$key` = ?";
+                        $values[] = $data[$key];
+                        switch ($value) {
+                            case 'int':
+                                $types .= 'i';
+                                break;
+                            case 'float':
+                            case 'double':
+                                $types .= 'd';
+                                break;
+                            default:
+                                $types .= 's';
+                        }
+                    }
                 }
             }
-            if ($where != '')
-                $where = " WHERE $where";
-            $sql = "
-            UPDATE " . $this->clean($table) . " SET
-                $sets
-                $where
-                ";
 
-            $this->_query($sql);
-            return true;
+            $sql = "UPDATE {$table} SET " . implode(',', $set);
+            if ($where != '')
+                $sql .= " WHERE $where";
+
+            $stmt = $this->conn->prepare($sql);
+            if ($stmt) {
+                $param[] = $stmt;
+                $param[] = $types;
+
+                foreach ($values as $key => $value) {
+                    $param[] = &$values[$key];
+                }
+
+                call_user_func_array('mysqli_stmt_bind_param', $param);
+
+                $stmt->execute();
+                $stmt->close();
+
+                return true;
+            } else {
+                $this->error();
+                return false;
+            }
         } else {
             return false;
         }
+    }
+
+    public function getColumns($table) {
+        $columns = $this->fetchAll("SHOW COLUMNS FROM $table");
+        foreach ($columns as $value) {
+            $tmp = explode('(', $value['Type']);
+            $column[$value['Field']] = $tmp[0];
+        }
+
+        return $column;
     }
 
     /**
@@ -245,20 +355,8 @@ class Crayd_Database {
             // is valid then..
             return $result;
         } else if ($this->config->debug) {
-            $debug = debug_backtrace();
-            $output = "
-                " . mysqli_error($this->conn) . "<br>
-                Caller:<br>
-                File: " . $debug[0]['file'] . "<br>
-                Line: " . $debug[0]['line'] . "<br>
-                Function: " . $debug[0]['function'] . "<br>
-                SQL: " . $debug[0]['args'][0] . "<br><hr>
-            ";
-
-            echo '<pre>';
-            echo $output;
-            echo '<pre>';
-            die();
+            $this->error();
+            return false;
         }
     }
 
@@ -275,6 +373,25 @@ class Crayd_Database {
             return $return;
         } else {
             return $this->conn->real_escape_string($text);
+        }
+    }
+
+    public function error() {
+        if ($this->config->debug) {
+            $debug = debug_backtrace();
+            $output = "
+                " . mysqli_error($this->conn) . "<br>
+                Caller:<br>
+                File: " . $debug[0]['file'] . "<br>
+                Line: " . $debug[0]['line'] . "<br>
+                Function: " . $debug[0]['function'] . "<br>
+                SQL: " . $debug[0]['args'][0] . "<br><hr>
+            ";
+
+            echo '<pre>';
+            echo $output;
+            echo '<pre>';
+            exit;
         }
     }
 
