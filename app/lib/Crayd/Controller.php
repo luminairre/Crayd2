@@ -115,9 +115,10 @@ class Crayd_Controller {
      * Redirects to another url
      * @param string $url 
      */
-    public function _redirect($url) {
-        
-        if (strpos($url, '://') === false) {
+    public function _redirect($url = null) {
+        if(is_null($url)) {
+            $url = $this->view->config->baseHref . $_GET['_route'];
+        } else if (strpos($url, '://') === false) {
             $url = $this->view->config->baseHref . $url;
         }
         
