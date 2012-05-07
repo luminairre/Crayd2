@@ -49,7 +49,7 @@ class Crayd_Database {
      * @param bool $idAsKey
      * @return array
      */
-    public function fetchAll($sql, $idAsKey = false, $columnKey = null) {
+    public function fetchAll($sql, $idAsKey = false, $columnKey = null, $multiple = false) {
         //$sql = $this->clean($sql);
         // queries
         $query = $this->_query($sql);
@@ -61,7 +61,11 @@ class Crayd_Database {
                     } else {
                         $key = $row['id'];
                     }
-                    $results[$key] = $row;
+                    if ($multiple) {
+                        $results[$key][] = $row;
+                    } else {
+                        $results[$key] = $row;
+                    }
                 } else {
                     $results[] = $row;
                 }
