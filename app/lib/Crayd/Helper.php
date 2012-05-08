@@ -85,7 +85,7 @@ class Crayd_Helper {
      * @param string $characters
      * @return string
      */
-    static public function generateRandom($lengthchar, $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890__') {
+    static public function generateRandom($lengthchar, $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890') {
         srand((double) microtime() * 1000000);
         $i = 0;
         $pass = '';
@@ -106,7 +106,7 @@ class Crayd_Helper {
      * @return string
      */
     public static function alnum($string) {
-        $string = str_replace(' ', '-', strtolower(trim($string)));
+        $string = str_replace(' ', '-', htmlspecialchars_decode(strtolower(trim($string)), ENT_QUOTES));
         $new_string = ereg_replace("[^A-Za-z0-9\-]", "", $string);
         $new_string = str_replace('---', '-', $new_string);
         $new_string = str_replace('--', '-', $new_string);
