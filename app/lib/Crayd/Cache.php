@@ -131,4 +131,48 @@ class Crayd_Cache {
         }
     }
 
+    /**
+     * Stores the cache in plain text instead of serialized stuff
+     * @param type $key
+     * @param type $content
+     * @param type $group 
+     */
+    public function plain($key, $content = null, $group = 'cache') {
+        // set the variables
+        $key = Crayd_Helper::alnum($key);
+        $mtime = $this->configmtime . $this->routemtime;
+        $filename = $this->cacheDir . DS . $group . '-' . $key . '-' . $mtime . '.php';
+        // if content is null, means its a retrieval
+        if ($content == null) {
+            // check file
+            if (file_exists($filename)) {
+                $handle = fopen($filename, "r");
+                $contents = fread($handle, filesize($filename));
+                fclose($handle);
+                // validate timestamp
+                $timestamp = substr($contents, 0, 10);
+                if ($timestamp > $_SERVER['REQUEST_TIME'] - $this->expire) {
+                    $contents = substr($contents, 10);
+                    return $contents;
+                } else {
+                    $this->clear($key, $group);
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            // content exists, storing data..
+            $file = fopen($filename, 'w');
+            if ($file) {
+                $content = $_SERVER['REQUEST_TIME'].$content;
+                fwrite($file, $content);
+                fclose($file);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
 }
