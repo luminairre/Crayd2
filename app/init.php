@@ -104,6 +104,20 @@ if (empty($_GET['_route']) && (!empty($_SERVER['PATH_INFO']) || !empty($_SERVER[
         unset($_temp);
     }
 }
+// Check for $argv
+if(is_array($argv) && count($argv) > 0 && empty($_GET['_route'])) {
+    // this is a CLI call..
+    // route is the second argument
+    $_GET['_route'] = $argv[1];
+    // second arg is query..
+    if(!empty($argv[2])) {
+        $ar = array();
+        $_temp = parse_str($argv[2], $ar);
+        $_GET = array_merge($_GET, $ar);
+        $_REQUEST = $ar;
+    }
+}
+
 // Init route
 $route = new Crayd_Route($_GET['_route']);
 
