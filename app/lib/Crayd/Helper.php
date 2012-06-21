@@ -107,7 +107,7 @@ class Crayd_Helper {
      */
     public static function alnum($string) {
         $string = str_replace(' ', '-', htmlspecialchars_decode(strtolower(trim($string)), ENT_QUOTES));
-        $new_string = ereg_replace("[^A-Za-z0-9\-]", "", $string);
+        $new_string = preg_replace("/[^A-Za-z0-9\-]/i", "", $string);
         $new_string = str_replace('---', '-', $new_string);
         $new_string = str_replace('--', '-', $new_string);
         return $new_string;
