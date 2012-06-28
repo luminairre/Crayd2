@@ -274,28 +274,31 @@ class Crayd_Database {
                     }
                 }
             }
+            if (count($set) > 0 && is_array($set)) {
+                $sql = "UPDATE {$table} SET " . implode(',', $set);
+                if ($where != '')
+                    $sql .= " WHERE $where";
 
-            $sql = "UPDATE {$table} SET " . implode(',', $set);
-            if ($where != '')
-                $sql .= " WHERE $where";
+                $stmt = $this->conn->prepare($sql);
+                if ($stmt) {
+                    $param[] = $stmt;
+                    $param[] = $types;
 
-            $stmt = $this->conn->prepare($sql);
-            if ($stmt) {
-                $param[] = $stmt;
-                $param[] = $types;
+                    foreach ($values as $key => $value) {
+                        $param[] = &$values[$key];
+                    }
 
-                foreach ($values as $key => $value) {
-                    $param[] = &$values[$key];
+                    call_user_func_array('mysqli_stmt_bind_param', $param);
+
+                    $stmt->execute();
+                    $stmt->close();
+
+                    return true;
+                } else {
+                    $this->error();
+                    return false;
                 }
-
-                call_user_func_array('mysqli_stmt_bind_param', $param);
-
-                $stmt->execute();
-                $stmt->close();
-
-                return true;
             } else {
-                $this->error();
                 return false;
             }
         } else {
