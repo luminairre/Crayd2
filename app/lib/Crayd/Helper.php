@@ -114,6 +114,61 @@ class Crayd_Helper {
     }
 
     /**
+     * returns basic browser engine
+     */
+    public static function getBrowser() {
+        $navigator_user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+
+        if (strpos($navigator_user_agent, 'trident') !== false)
+            return 'trident';
+        
+        if (strpos($navigator_user_agent, "webkit") !== false)
+            return 'webkit';
+        
+        if (strpos($navigator_user_agent, "presto") !== false)
+            return 'presto';
+        
+        if (strpos($navigator_user_agent, "gecko") !== false)
+            return 'gecko';
+        
+        if (strpos($navigator_user_agent, "robot") !== false)
+            return 'robot';
+        if (strpos($navigator_user_agent, "spider") !== false)
+            return 'robot';
+        if (strpos($navigator_user_agent, "bot") !== false)
+            return 'robot';
+        if (strpos($navigator_user_agent, "crawl") !== false)
+            return 'robot';
+        if (strpos($navigator_user_agent, "search") !== false)
+            return 'robot';
+        
+        if (strpos($navigator_user_agent, "w3c_validator") !== false)
+            return 'validator';
+        if (strpos($navigator_user_agent, "jigsaw") !== false)
+            return 'validator';
+        
+        return 'unknownengine';
+    }
+
+    /**
+     * returns basic platform infomation
+     */
+    public static function getPlatform() {
+        $navigator_user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+
+        if (strpos($navigator_user_agent, 'linux') !== false)
+            return 'linux';
+
+        if (strpos($navigator_user_agent, 'mac') !== false)
+            return 'mac';
+
+        if (strpos($navigator_user_agent, 'win') !== false)
+            return 'windows';
+
+        return 'unknownplatform';
+    }
+
+    /**
      * Validates $var
      * Methods are: required, alnum, array, email, max, min, url
      * Values are array, for now its
@@ -165,7 +220,7 @@ class Crayd_Helper {
 
         return true;
     }
-    
+
     /**
      * Converts filesize
      * Kudos to Alix Axel @ stackoverflow
