@@ -91,7 +91,7 @@ class Crayd_Helper {
         $pass = '';
         $length = strlen($characters) - 1;
 
-        while ($i < $length) {
+        while ($i < $lengthchar) {
             $num = rand() % $length;
             $tmp = substr($characters, $num, 1);
             $pass = $pass . $tmp;
