@@ -306,16 +306,23 @@ class Crayd_Database {
         }
     }
 
-    public function getColumns($table) {
-        $columns = $this->fetchAll("SHOW COLUMNS FROM $table");
-        foreach ($columns as $value) {
-            $tmp = explode('(', $value['Type']);
-            $column[$value['Field']] = $tmp[0];
+	/**
+	 * Show available columns, cached
+	 */
+	public function getColumns($table) {
+        if ($this->columns[$table] == null) {
+            $columns = $this->fetchAll("SHOW COLUMNS FROM $table");
+            foreach ($columns as $value) {
+                $tmp = explode('(', $value['Type']);
+                $column[$value['Field']] = $tmp[0];
+            }
+            $this->columns[$table] = $column;
+            return $column;
+        } else {
+            return $this->columns[$table];
         }
-
-        return $column;
     }
-
+    
     /**
      * Delete from $table where $where
      * @param string $table
