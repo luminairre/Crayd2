@@ -17,11 +17,6 @@ if(!defined('INFRAMEWORK')) {
 ## Routing configuration
 #######
 /**
- * Enables custom route
- * @see route.php
- */
-$config->route->enableCustomRoute = false;
-/**
  * Enables section if array is entered
  */
 $config->route->sections = array();
@@ -29,6 +24,13 @@ $config->route->sections = array();
  * Namespace, section like container, but not URL-effected 
  */
 $config->route->namespace = null;
+/**
+ * Default controllers
+ * ie: 
+ * array('detail' => 'product');
+ * will "force" /detail/id/1 to "/product/id/1"
+ */
+$config->route->defaultControllers = array();
 
 #######
 ## View class configuration

@@ -43,17 +43,14 @@ class Crayd_Route {
      * Constructor
      * @param string 
      */
-    public function __construct($route) {        
+    public function __construct($route) {
         // Get config from registry
         $this->config = Crayd_Registry::get('config')->route;
 
         // route
         $this->route = $route;
-        if ($this->config->enableCustomRoute) {
-            $this->parseWithConfig();
-        } else {
-            $this->parse();
-        }
+
+        $this->parse();
     }
 
     /**
@@ -117,6 +114,11 @@ class Crayd_Route {
         } else {
             // Well here goes the route parsing
             $segments = $this->data->segments;
+            // check for default controller
+            if(!empty($this->config->defaultControllers[$segments[0]])) {
+                // there is a default controller, lets push it
+                array_unshift($segments, $this->config->defaultControllers[$segments[0]]);
+            }
             // Set default action
             // dunno but i just feel that i have to set here..
             if ($segments[1] != '') {
