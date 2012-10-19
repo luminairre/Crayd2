@@ -63,6 +63,6 @@ $config->auth->uniqueID = '1230';
  */
 $config->debug = true;
 /**
- * Turns on session
+ * Comment to disable session
  */
-$config->session = true;
+session_start();
