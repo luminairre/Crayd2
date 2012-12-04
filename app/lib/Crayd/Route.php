@@ -225,6 +225,7 @@ class Crayd_Route {
             for ($i = $usedCount; $i < $segmentCount; $i++) {
                 $variables[$segments[$i]] = $segments[$i + 1];
                 $_GET[$segments[$i]] = $segments[$i + 1];
+                $_REQUEST[$segments[$i]] = $segments[$i + 1];
                 $i++;
             }
             $this->data->variables = $variables;
