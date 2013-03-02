@@ -112,8 +112,8 @@ class Crayd_View {
     /**
      * Change include directory
      */
-    public function setDir() {
-        
+    public function setDir($dir) {
+        $this->dir = $dir;
     }
 
     /**

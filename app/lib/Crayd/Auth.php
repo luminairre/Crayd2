@@ -45,7 +45,7 @@ class Crayd_Auth {
             // got cookie.. now parse it
             $data = unserialize(stripslashes($_COOKIE['vee_var' . $this->config->uniqueID]));
             // get the id
-            $id = (int) $data['sessid'];
+            $id = (int) $data['sess1'];
             // try to find the user
             $sql = "
                 SELECT *
@@ -55,8 +55,8 @@ class Crayd_Auth {
             $result = $this->db->fetchRow($sql);
             if ($result) {
                 // user id exist, now check userdata matches
-                if ($data['sessname'] == md5($result['username'])
-                        && $data['sessdate'] == md5($result['created'])
+                if ($data['sess2'] == sha1($result['username'])
+                        && $data['sess3'] == sha1($login['username'].$login['password'].$login['id'])
                 ) {
                     // user matches
                     $this->data->user->is_logged = 1;
@@ -103,9 +103,9 @@ class Crayd_Auth {
         $login = $this->validatePassword($username, $password);
         if (is_array($login)) {
             // set cookie data
-            $cookie['sessid'] = $login['id'];
-            $cookie['sessname'] = md5($login['username']);
-            $cookie['sessdate'] = md5($login['created']);
+            $cookie['sess1'] = $login['id'];
+            $cookie['sess2'] = sha1($login['username']);
+            $cookie['sess3'] = sha1($login['username'].$login['password'].$login['id']);
             $cookie = serialize($cookie);
             // expire
             $expire = time() + ( 60 * $expire );
@@ -119,13 +119,13 @@ class Crayd_Auth {
     /**
      * Forces login, used for facebook login.
      * Needs login info from outer source 
-     * id, username, and created
+     * Needs to pass userinfo
      */
     public function forceLogin($login, $expire = null) {
         // set cookie data
-        $cookie['sessid'] = $login['id'];
-        $cookie['sessname'] = md5($login['username']);
-        $cookie['sessdate'] = md5($login['created']);
+        $cookie['sess1'] = $login['id'];
+        $cookie['sess2'] = sha1($login['username']);
+        $cookie['sess3'] = sha1($login['username'].$login['password'].$login['id']);
         $cookie = serialize($cookie);
         if ($expire == null) {
             $expire = 60 * 24 * 30;
@@ -137,12 +137,14 @@ class Crayd_Auth {
 
     /**
      * Validates user password
+     * You need to store password in this format:
+     * sha1(md5($password).md5($password))
      * @param string $username
      * @param string $password
      */
     public function validatePassword($username, $password) {
         $username = $this->db->clean($username);
-        $password = md5($password);
+        $password = sha1(md5($password).md5($password));
 
         $sql = "
             SELECT *
