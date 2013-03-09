@@ -56,7 +56,7 @@ class Crayd_Auth {
             if ($result) {
                 // user id exist, now check userdata matches
                 if ($data['sess2'] == sha1($result['username'])
-                        && $data['sess3'] == sha1($login['username'].$login['password'].$login['id'])
+                        && $data['sess3'] == sha1($result['username'].$result['username'].$result['id'])
                 ) {
                     // user matches
                     $this->data->user->is_logged = 1;
@@ -101,11 +101,12 @@ class Crayd_Auth {
         }
         // validate username & password
         $login = $this->validatePassword($username, $password);
+        
         if (is_array($login)) {
             // set cookie data
             $cookie['sess1'] = $login['id'];
             $cookie['sess2'] = sha1($login['username']);
-            $cookie['sess3'] = sha1($login['username'].$login['password'].$login['id']);
+            $cookie['sess3'] = sha1($login['username'].$login['username'].$login['id']);
             $cookie = serialize($cookie);
             // expire
             $expire = time() + ( 60 * $expire );
@@ -143,6 +144,7 @@ class Crayd_Auth {
      * @param string $password
      */
     public function validatePassword($username, $password) {
+        
         $username = $this->db->clean($username);
         $password = sha1(md5($password).md5($password));
 
