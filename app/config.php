@@ -46,6 +46,7 @@ $config->db->username = '';
 $config->db->password = '';
 $config->db->database = '';
 $config->db->debug = true;
+$config->db->enabled = false;
 
 #######
 ## Auth class configuration 

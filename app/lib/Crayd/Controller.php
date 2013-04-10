@@ -51,6 +51,10 @@ class Crayd_Controller {
         $this->config = Crayd_Registry::get('config');
         // Request object
         $this->request = new Crayd_Request($route);
+        
+        if($this->config->db->enabled && !empty($this->config->db->host)) {
+            $this->db = Crayd_Database::factory();
+        }
     }
 
     /**
