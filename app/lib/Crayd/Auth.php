@@ -26,6 +26,7 @@ class Crayd_Auth {
     // DB object
     private $db;
     private $config;
+    private $salt = '';
 
     /**
      * Constructor
@@ -55,9 +56,9 @@ class Crayd_Auth {
             $result = $this->db->fetchRow($sql);
             if ($result) {
                 // user id exist, now check userdata matches
-                if ($data['sess2'] == sha1($result['username'])
-                        && $data['sess3'] == sha1($result['username'].$result['username'].$result['id'])
-                ) {
+                $hash1 = sha1($result['username'] . substr(sha1(md5($result['password']) . md5($result['password'])), 10, 20));
+                $hash2 = sha1($result['username'] . substr(sha1(md5($result['password']) . md5($result['password'])), 2, 20) . $result['id']);
+                if ($data['sess2'] == $hash1 && $data['sess3'] == $hash2) {
                     // user matches
                     $this->data->user->is_logged = 1;
                     // load user info
@@ -101,12 +102,14 @@ class Crayd_Auth {
         }
         // validate username & password
         $login = $this->validatePassword($username, $password);
-        
+
         if (is_array($login)) {
             // set cookie data
+            $hash1 = sha1($result['username'] . substr(sha1(md5($result['password']) . md5($result['password'])), 10, 20));
+            $hash2 = sha1($result['username'] . substr(sha1(md5($result['password']) . md5($result['password'])), 2, 20) . $result['id']);
             $cookie['sess1'] = $login['id'];
-            $cookie['sess2'] = sha1($login['username']);
-            $cookie['sess3'] = sha1($login['username'].$login['username'].$login['id']);
+            $cookie['sess2'] = $hash1;
+            $cookie['sess3'] = $hash2;
             $cookie = serialize($cookie);
             // expire
             $expire = time() + ( 60 * $expire );
@@ -124,9 +127,11 @@ class Crayd_Auth {
      */
     public function forceLogin($login, $expire = null) {
         // set cookie data
+        $hash1 = sha1($result['username'] . substr(sha1(md5($result['password']) . md5($result['password'])), 10, 20));
+        $hash2 = sha1($result['username'] . substr(sha1(md5($result['password']) . md5($result['password'])), 2, 20) . $result['id']);
         $cookie['sess1'] = $login['id'];
-        $cookie['sess2'] = sha1($login['username']);
-        $cookie['sess3'] = sha1($login['username'].$login['password'].$login['id']);
+        $cookie['sess2'] = $hash1;
+        $cookie['sess3'] = $hash2;
         $cookie = serialize($cookie);
         if ($expire == null) {
             $expire = 60 * 24 * 30;
@@ -144,9 +149,8 @@ class Crayd_Auth {
      * @param string $password
      */
     public function validatePassword($username, $password) {
-        
         $username = $this->db->clean($username);
-        $password = sha1(md5($password).md5($password));
+        $password = sha1(md5($password) . md5($password) . $this->salt);
 
         $sql = "
             SELECT *
@@ -160,6 +164,14 @@ class Crayd_Auth {
         } else {
             return 0;
         }
+    }
+
+    public function hashPassword($password) {
+        return sha1(md5($password) . md5($password) . $this->salt);
+    }
+
+    public function setSalt($salt = '') {
+        $this->salt = $salt;
     }
 
     /**
