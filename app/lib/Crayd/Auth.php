@@ -101,13 +101,13 @@ class Crayd_Auth {
             $expire = 60 * 24 * 30;
         }
         // validate username & password
-        $login = $this->validatePassword($username, $password);
+        $result = $this->validatePassword($username, $password);
 
         if (is_array($login)) {
             // set cookie data
             $hash1 = sha1($result['username'] . substr(sha1(md5($result['password']) . md5($result['password'])), 10, 20));
             $hash2 = sha1($result['username'] . substr(sha1(md5($result['password']) . md5($result['password'])), 2, 20) . $result['id']);
-            $cookie['sess1'] = $login['id'];
+            $cookie['sess1'] = $result['id'];
             $cookie['sess2'] = $hash1;
             $cookie['sess3'] = $hash2;
             $cookie = serialize($cookie);

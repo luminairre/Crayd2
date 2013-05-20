@@ -55,6 +55,7 @@ $config->auth->table->member = '';
 $config->auth->table->data = '';
 $config->auth->table->log = '';
 $config->auth->uniqueID = '1230';
+$config->auth->domain = '';
 
 #######
 ## Other config
