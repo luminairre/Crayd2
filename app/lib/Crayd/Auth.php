@@ -103,7 +103,7 @@ class Crayd_Auth {
         // validate username & password
         $result = $this->validatePassword($username, $password);
 
-        if (is_array($login)) {
+        if (is_array($result)) {
             // set cookie data
             $hash1 = sha1($result['username'] . substr(sha1(md5($result['password']) . md5($result['password'])), 10, 20));
             $hash2 = sha1($result['username'] . substr(sha1(md5($result['password']) . md5($result['password'])), 2, 20) . $result['id']);
