@@ -67,4 +67,5 @@ $config->debug = true;
 /**
  * Comment to disable session
  */
+$config->session = true;
 session_start();
