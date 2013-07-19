@@ -178,7 +178,7 @@ class Crayd_Auth {
      * Logs user out of system
      */
     public function logout() {
-        setcookie('vee_var' . $this->config->uniqueID, null, time() - 3600, '/');
+        setcookie('vee_var' . $this->config->uniqueID, null, time() - 3600, '/', $this->config->domain);
         unset($_COOKIE['vee_var' . $this->config->uniqueID]);
     }
 
