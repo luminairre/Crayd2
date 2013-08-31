@@ -100,6 +100,7 @@ class Crayd_Route {
             // Empty route
             $this->data->action = 'index';
             $this->data->controller = 'index';
+            $this->data->subaction = '';
             // Check the index controller
             if (!file_exists($controllerDir . DS . 'indexController' . EXT)) {
                 $this->forceDefault = true;
@@ -115,7 +116,7 @@ class Crayd_Route {
             // Well here goes the route parsing
             $segments = $this->data->segments;
             // check for default controller
-            if(!empty($this->config->defaultControllers[$segments[0]])) {
+            if (!empty($this->config->defaultControllers[$segments[0]])) {
                 // there is a default controller, lets push it
                 array_unshift($segments, $this->config->defaultControllers[$segments[0]]);
             }
@@ -149,6 +150,13 @@ class Crayd_Route {
                 } else {
                     // Meh... ? file exist but the class and the view doesnt... hacking attempt i guess..
                     $this->data->action = 'error';
+                }
+                // Subaction checking
+                if ($segments[2] != '' && $used == 2) {
+                    if (method_exists($this->data->controller . 'Controller', $this->data->action . '_' . $segments[2] . 'Subaction')) {
+                        $this->data->subaction = $segments[2];
+                        $used = 3;
+                    }
                 }
             } else {
                 if (file_exists($controllerDir . DS . 'indexController' . EXT) && method_exists('indexController', $segments[0] . 'Action')) {

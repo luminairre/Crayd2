@@ -43,6 +43,9 @@ class Crayd_View {
         $this->layoutFile = 'layout';
         if (!empty($this->route->data->action)) {
             $this->viewFile = $this->route->data->controller . '_' . $this->route->data->action;
+            if (!empty($this->route->data->subaction)) {
+                $this->viewFile = $this->route->data->controller . '_' . $this->route->data->action . '_' . $this->route->data->subaction;
+            }
         } else {
             $this->viewFile = $this->route->data->controller;
         }
@@ -79,6 +82,16 @@ class Crayd_View {
         }
         if (file_exists($this->dir . DS . $filename)) {
             include($this->dir . DS . $filename);
+        } else if (!empty($this->route->data->subaction)) {
+            $this->viewFile = $this->route->data->controller . '_' . $this->route->data->action;
+            if (substr($this->viewFile, -3) != 'php') {
+                $filename = $this->viewFile . '.php';
+            } else {
+                $filename = $this->viewFile;
+            }
+            if (file_exists($this->dir . DS . $filename)) {
+                include($this->dir . DS . $filename);
+            }
         }
     }
 
