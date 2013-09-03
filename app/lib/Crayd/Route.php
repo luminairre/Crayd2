@@ -153,7 +153,7 @@ class Crayd_Route {
                 }
                 // Subaction checking
                 if ($segments[2] != '' && $used == 2) {
-                    if (method_exists($this->data->controller . 'Controller', $this->data->action . '_' . $segments[2] . 'Subaction')) {
+                    if (method_exists($this->data->controller . 'Controller', $this->data->action . 'Action_' . $segments[2] . 'Subaction')) {
                         $this->data->subaction = $segments[2];
                         $used = 3;
                     }
