@@ -216,6 +216,7 @@ class Crayd_Route {
             $_REQUEST['_section'] = $this->data->section;
         if (!empty($this->data->namespace))
             $_REQUEST['_namespace'] = $this->data->namespace;
+        $_REQUEST['_subaction'] = $this->data->subaction;
         $_REQUEST['_action'] = $this->data->action;
         $_REQUEST['_controller'] = $this->data->controller;
     }
