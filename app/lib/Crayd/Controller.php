@@ -14,21 +14,25 @@ class Crayd_Controller {
      * @var Crayd_View
      */
     var $view;
+
     /**
      *
      * @var Crayd_Database
      */
     var $db;
+
     /**
      *
      * @var Crayd_Route
      */
     var $route;
+
     /**
      * 
      * @var mixed
      */
     var $config;
+
     /**
      *
      * @var Crayd_Request 
@@ -40,7 +44,7 @@ class Crayd_Controller {
      * @var Crayd_Auth
      */
     var $auth;
-    
+
     /**
      *
      * @param Crayd_Route $route 
@@ -51,8 +55,8 @@ class Crayd_Controller {
         $this->config = Crayd_Registry::get('config');
         // Request object
         $this->request = new Crayd_Request($route);
-        
-        if($this->config->db->enabled && !empty($this->config->db->host)) {
+
+        if ($this->config->db->enabled && !empty($this->config->db->host)) {
             $this->db = Crayd_Database::factory();
         }
     }
@@ -65,7 +69,7 @@ class Crayd_Controller {
         $appDir = Crayd_Registry::get('appDir');
 
         // Create view instance
-        $this->view = new Crayd_View($this->route);
+        $this->createViewInstance();
 
         // Check for global preDispatch
         if (file_exists($appDir . DS . 'globalPreDispatch' . EXT)) {
@@ -78,7 +82,7 @@ class Crayd_Controller {
         if (Crayd_Registry::get('config')->session) {
             session_start();
         }
-        
+
         // Create action name
         $actionName = $this->route->data->action . 'Action';
         // Method check b4 calling
@@ -86,9 +90,10 @@ class Crayd_Controller {
             // Method exist, call it
             $this->$actionName();
             // subaction
-            if($this->route->data->subaction != '') {
+            if ($this->route->data->subaction != '') {
                 $subactionName = "{$actionName}_{$this->route->data->subaction}Subaction";
-                if(method_exists($this, $subactionName)) {
+
+                if (method_exists($this, $subactionName)) {
                     $this->$subactionName();
                 }
             }
@@ -114,6 +119,10 @@ class Crayd_Controller {
         $this->view->dispatchLayout();
     }
 
+    public function createViewInstance() {
+        $this->view = new Crayd_View($this->route);
+    }
+
     /**
      * Request object handler
      * @return Crayd_Request 
@@ -127,12 +136,12 @@ class Crayd_Controller {
      * @param string $url 
      */
     public function _redirect($url = null) {
-        if(is_null($url)) {
+        if (is_null($url)) {
             $url = $this->view->config->baseHref . $_GET['_route'];
         } else if (strpos($url, '://') === false) {
             $url = $this->view->config->baseHref . $url;
         }
-        
+
         header('Location: ' . $url);
         exit;
     }
@@ -175,7 +184,7 @@ class Crayd_Controller {
     public function _getParam($key, $default = null) {
         return $this->getRequest()->getParam($key, $default);
     }
-    
+
     /**
      * Returns segments, numbered from 0
      * @return array
@@ -197,9 +206,9 @@ class Crayd_Controller {
     public function postDispatch() {
         
     }
-    
+
     /**
-     *Default error catcher 
+     * Default error catcher 
      */
     public function errorAction() {
         
