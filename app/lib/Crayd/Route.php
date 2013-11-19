@@ -166,6 +166,13 @@ class Crayd_Route {
                     $this->data->controller = 'index';
                     $this->data->action = $segments[0];
                     $used = 1;
+                    // Subaction checking
+                    if ($segments[1] != '') {
+                        if (method_exists($this->data->controller . 'Controller', $this->data->action . 'Action_' . $segments[1] . 'Subaction')) {
+                            $this->data->subaction = $segments[1];
+                            $used = 2;
+                        }
+                    }
                 } else if (file_exists($viewDir . DS . 'index_' . $segments[0] . EXT)) {
                     // Only view file exists
                     $this->data->controller = 'index';
