@@ -9,10 +9,11 @@ class Crayd_Entity {
     protected $table = '';
     protected $status = array();
 
-    public function __construct($data) {
+    public function __construct($table, $data) {
         $this->db = Crayd_Database::factory();
 
         $this->_data = $data;
+        $this->table = $table;
 
         $this->_initEntity($data);
     }

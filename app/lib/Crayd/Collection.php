@@ -11,8 +11,10 @@ class Crayd_Collection {
     protected $order = "";
     protected $limit = "";
 
-    public function __construct() {
+    public function __construct($table) {
         $this->db = Crayd_Database::factory();
+
+        $this->table = $table;
     }
 
     public function load($idAsKey = false, $columnKey = null, $multiple = false) {
