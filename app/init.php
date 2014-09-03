@@ -105,7 +105,7 @@ if (empty($_GET['_route']) && (!empty($_SERVER['PATH_INFO']) || !empty($_SERVER[
     }
 }
 // Check for $argv
-if(is_array($argv) && count($argv) > 0 && empty($_GET['_route'])) {
+if(!empty($argv) && is_array($argv) && count($argv) > 0 && empty($_GET['_route'])) {
     // this is a CLI call..
     // route is the second argument
     $_GET['_route'] = $argv[1];
@@ -119,6 +119,8 @@ if(is_array($argv) && count($argv) > 0 && empty($_GET['_route'])) {
 }
 
 // Init route
+if(empty($_GET['_route']))
+    $_GET['_route'] = '';
 $route = new Crayd_Route($_GET['_route']);
 
 // Init controller

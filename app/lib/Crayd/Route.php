@@ -49,7 +49,7 @@ class Crayd_Route {
 
         // route
         $this->route = $route;
-
+        $this->data = new stdClass();
         $this->parse();
     }
 
@@ -218,7 +218,8 @@ class Crayd_Route {
         }
 
         // Move others
-        $_REQUEST['_segments'] = $this->data->segments;
+        if (!empty($this->data->segments))
+            $_REQUEST['_segments'] = $this->data->segments;
         if (!empty($this->data->section))
             $_REQUEST['_section'] = $this->data->section;
         if (!empty($this->data->namespace))

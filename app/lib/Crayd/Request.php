@@ -124,7 +124,7 @@ class Crayd_Request {
 
     public function __construct($route) {
         // Generate param...
-        if (is_array($route->data->variables)) {
+        if (!empty($route->data->variables) && is_array($route->data->variables)) {
             $this->params = array_merge($_GET, $route->data->variables, $_POST);
         } else {
             $this->params = array_merge($_GET, $_POST);

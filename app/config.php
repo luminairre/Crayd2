@@ -16,6 +16,12 @@ if(!defined('INFRAMEWORK')) {
 #######
 ## Routing configuration
 #######
+$config = new stdClass();
+$config->route = new stdClass();
+$config->view = new stdClass();
+$config->db = new stdClass();
+$config->auth = new stdClass();
+$config->auth->table = new stdClass();
 /**
  * Enables section if array is entered
  */

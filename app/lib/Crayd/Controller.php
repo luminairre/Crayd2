@@ -78,11 +78,6 @@ class Crayd_Controller {
         // Run preDispatch
         $this->preDispatch();
 
-        // Session?
-        if (Crayd_Registry::get('config')->session) {
-            session_start();
-        }
-
         // Create action name
         $actionName = $this->route->data->action . 'Action';
         // Method check b4 calling
