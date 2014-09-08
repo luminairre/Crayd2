@@ -71,9 +71,13 @@ class Crayd_Database {
                 }
             }
             // put results to var for more processing
-            $this->result = $results;
-            $query->free_result();
-            return $results;
+            if (!empty($results)) {
+                $this->result = $results;
+                $query->free_result();
+                return $results;
+            } else {
+                return null;
+            }
         } else {
             return false;
         }
@@ -306,10 +310,10 @@ class Crayd_Database {
         }
     }
 
-	/**
-	 * Show available columns, cached
-	 */
-	public function getColumns($table) {
+    /**
+     * Show available columns, cached
+     */
+    public function getColumns($table) {
         if ($this->columns[$table] == null) {
             $columns = $this->fetchAll("SHOW COLUMNS FROM $table");
             foreach ($columns as $value) {
@@ -322,7 +326,7 @@ class Crayd_Database {
             return $this->columns[$table];
         }
     }
-    
+
     /**
      * Delete from $table where $where
      * @param string $table
