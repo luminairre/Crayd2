@@ -54,6 +54,7 @@ class Crayd_Database {
         // queries
         $query = $this->_query($sql);
         if ($query) {
+            $results = array();
             while ($row = $query->fetch_assoc()) {
                 if ($idAsKey) {
                     if ($columnKey != null && $row[$columnKey] != null) {
