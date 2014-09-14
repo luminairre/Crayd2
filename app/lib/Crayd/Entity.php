@@ -3,7 +3,6 @@
 class Crayd_Entity {
 
     var $db;
-
     protected $_data = array();
     protected $update = array();
     protected $table = '';
@@ -11,6 +10,10 @@ class Crayd_Entity {
 
     public function __construct($table, $data) {
         $this->db = Crayd_Database::factory();
+
+        if (strpos($table, '`') === false) {
+            $table = "`{$table}`";
+        }
 
         $this->_data = $data;
         $this->table = $table;

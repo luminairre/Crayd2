@@ -3,7 +3,6 @@
 class Crayd_Collection {
 
     var $db;
-
     protected $data = null;
     protected $table = '';
     protected $where = array();
@@ -13,7 +12,11 @@ class Crayd_Collection {
 
     public function __construct($table) {
         $this->db = Crayd_Database::factory();
-
+        
+        if (strpos($table, '`') === false) {
+            $table = "`{$table}`";
+        }
+        
         $this->table = $table;
     }
 
