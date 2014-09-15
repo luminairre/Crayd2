@@ -6,13 +6,15 @@ class Crayd_Collection {
     protected $data = null;
     protected $table = '';
     protected $where = array();
+    protected $join = array();
     protected $columns = "*";
     protected $order = "";
     protected $limit = "";
+    protected $group = "";
 
     public function __construct($table) {
         $this->db = Crayd_Database::factory();
-        
+
         if (strpos($table, '`') === false) {
             $table = "`{$table}`";
         }
@@ -25,15 +27,35 @@ class Crayd_Collection {
             $where = " WHERE (" . implode(") AND (", $this->where) . ") ";
         }
 
-        $sql = "SELECT {$this->columns} FROM {$this->table} {$where} {$this->order} {$this->limit}";
+        if (count($this->join) > 0) {
+            $join = implode(" ", $this->join);
+        }
+
+        $sql = "SELECT {$this->columns} FROM {$this->table} {$join} {$where} {$this->order} {$this->group} {$this->limit}";
 
         $this->data = $this->db->fetchAll($sql, $idAsKey, $columnKey, $multiple);
 
         return $this->data;
     }
 
+    public function join($join) {
+        $this->join[] = $join;
+    }
+
     public function order($order) {
         $this->order = " ORDER BY {$order} ";
+
+        return $this;
+    }
+
+    public function table($table) {
+        $this->table = $table;
+
+        return $this;
+    }
+
+    public function group($group) {
+        $this->group = "GROUP BY {$group}";
 
         return $this;
     }
@@ -64,6 +86,7 @@ class Crayd_Collection {
         $this->data = null;
         $this->where = array();
         $this->order = "";
+        $this->join = array();
     }
 
     public function columns($columns) {
