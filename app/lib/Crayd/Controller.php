@@ -82,15 +82,23 @@ class Crayd_Controller {
         $actionName = $this->route->data->action . 'Action';
         // Method check b4 calling
         if ($this->route->data->action != '' && method_exists($this, $actionName)) {
-            // Method exist, call it
-            $this->$actionName();
             // subaction
-            if ($this->route->data->subaction != '') {
+            if (!empty($this->route->data->subaction)) {
                 $subactionName = "{$actionName}_{$this->route->data->subaction}Subaction";
 
                 if (method_exists($this, $subactionName)) {
+                    $this->$actionName();
                     $this->$subactionName();
                 }
+                
+                $mainactionName = "{$actionName}_{$this->route->data->subaction}Mainaction";
+                
+                if (method_exists($this, $mainactionName)) {
+                    $this->$mainactionName();
+                }
+            } else {
+                // Method exist, call it
+                $this->$actionName();
             }
         } else {
             // Doesnt exist, call error handler

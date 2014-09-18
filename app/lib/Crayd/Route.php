@@ -152,8 +152,12 @@ class Crayd_Route {
                     $this->data->action = 'error';
                 }
                 // Subaction checking
-                if ($segments[2] != '' && $used == 2) {
+                if (!empty($segments[2]) && $used == 2) {
                     if (method_exists($this->data->controller . 'Controller', $this->data->action . 'Action_' . $segments[2] . 'Subaction')) {
+                        $this->data->subaction = $segments[2];
+                        $used = 3;
+                    }
+                    if (method_exists($this->data->controller . 'Controller', $this->data->action . 'Action_' . $segments[2] . 'Mainaction')) {
                         $this->data->subaction = $segments[2];
                         $used = 3;
                     }
@@ -224,7 +228,9 @@ class Crayd_Route {
             $_REQUEST['_section'] = $this->data->section;
         if (!empty($this->data->namespace))
             $_REQUEST['_namespace'] = $this->data->namespace;
-        $_REQUEST['_subaction'] = $this->data->subaction;
+        if (!empty($this->data->subaction)) {
+            $_REQUEST['_subaction'] = $this->data->subaction;
+        }
         $_REQUEST['_action'] = $this->data->action;
         $_REQUEST['_controller'] = $this->data->controller;
     }
