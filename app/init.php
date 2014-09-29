@@ -59,6 +59,10 @@ function __autoload($className) {
         if (file_exists($appDir . DS . 'models' . DS . $className . EXT)) {
             include_once($appDir . DS . 'models' . DS . $className . EXT);
         }
+    } else if (strpos($className, '\\') !== false) {
+        if (file_exists($appDir . DS . 'lib' . DS . str_replace('\\', '/', $className) . EXT)) {
+            include_once($appDir . DS . 'lib' . DS . str_replace('\\', '/', $className) . EXT);
+        }
     } else {
         // Detect underscores as subfolder
         if (strpos($className, '_') !== false) {
@@ -105,12 +109,12 @@ if (empty($_GET['_route']) && (!empty($_SERVER['PATH_INFO']) || !empty($_SERVER[
     }
 }
 // Check for $argv
-if(!empty($argv) && is_array($argv) && count($argv) > 0 && empty($_GET['_route'])) {
+if (!empty($argv) && is_array($argv) && count($argv) > 0 && empty($_GET['_route'])) {
     // this is a CLI call..
     // route is the second argument
     $_GET['_route'] = $argv[1];
     // second arg is query..
-    if(!empty($argv[2])) {
+    if (!empty($argv[2])) {
         $ar = array();
         $_temp = parse_str($argv[2], $ar);
         $_GET = array_merge($_GET, $ar);
@@ -119,7 +123,7 @@ if(!empty($argv) && is_array($argv) && count($argv) > 0 && empty($_GET['_route']
 }
 
 // Init route
-if(empty($_GET['_route']))
+if (empty($_GET['_route']))
     $_GET['_route'] = '';
 $route = new Crayd_Route($_GET['_route']);
 
