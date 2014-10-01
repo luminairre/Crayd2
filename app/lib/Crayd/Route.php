@@ -59,7 +59,7 @@ class Crayd_Route {
     public function parse() {
         // App folder
         $appDir = Crayd_Registry::get('appDir');
-        $controllerDir = $appDir . DS . 'controllers';
+        $controllerDir2 = $controllerDir = $appDir . DS . 'controllers';
         $viewDir = $appDir . DS . 'views';
         // Used segment
         $used = 0;
@@ -158,6 +158,36 @@ class Crayd_Route {
                         $used = 3;
                     }
                     if (method_exists($this->data->controller . 'Controller', $this->data->action . 'Action_' . $segments[2] . 'Mainaction')) {
+                        $this->data->subaction = $segments[2];
+                        $used = 3;
+                    }
+                }
+            } elseif (file_exists($controllerDir2 . DS . $segments[0] . 'Controller' . EXT)) {
+                $this->data->controller = $segments[0];
+                // Check method existence for this controller..
+                if (method_exists($this->data->controller . 'Controller', $this->data->action . 'Action')) {
+                    // Method exists...
+                    $used = 2;
+                } else if (file_exists($viewDir . DS . $this->data->controller . '_' . $this->data->action . EXT)) {
+                    // View file exists but method doesnt...
+                    $this->forceView = true;
+                    $used = 2;
+                } else if ($this->data->action != 'index' && method_exists($segments[0] . 'Controller', 'indexAction')) {
+                    // Action is not index, but indexAction exists...
+                    $this->data->action = 'index';
+                    $used = 1;
+                } else if (file_exists($viewDir . DS . $this->data->controller . '_index' . EXT)) {
+                    // Index action does not exist, but view file exists..
+                    $this->data->action = 'index';
+                    $this->forceView = true;
+                    $used = 1;
+                } else {
+                    // Meh... ? file exist but the class and the view doesnt... hacking attempt i guess..
+                    $this->data->action = 'error';
+                }
+                // Subaction checking
+                if ($segments[2] != '' && $used == 2) {
+                    if (method_exists($this->data->controller . 'Controller', $this->data->action . 'Action_' . $segments[2] . 'Subaction')) {
                         $this->data->subaction = $segments[2];
                         $used = 3;
                     }

@@ -47,6 +47,8 @@ function __autoload($className) {
             if (!empty($namespace)) {
                 if (file_exists($appDir . DS . 'controllers' . DS . $namespace . DS . $className . EXT)) {
                     include_once($appDir . DS . 'controllers' . DS . $namespace . DS . $className . EXT);
+                } else if (file_exists($appDir . DS . 'controllers' . DS . $className . EXT)) {
+                    include_once($appDir . DS . 'controllers' . DS . $className . EXT);
                 }
             } else {
                 if (file_exists($appDir . DS . 'controllers' . DS . $className . EXT)) {
