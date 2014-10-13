@@ -2,28 +2,31 @@
 
 class Crayd_Entity {
 
+    /**
+     *
+     * @var Crayd_Database
+     */
     var $db;
     protected $_data = array();
-    protected $update = array();
-    protected $table = '';
-    protected $status = array();
+    protected $_update = array();
+    protected $_table = '';
 
     public function __construct($table, $data) {
         $this->db = Crayd_Database::factory();
-
+        
         if (strpos($table, '`') === false) {
             $table = "`{$table}`";
         }
 
         $this->_data = $data;
-        $this->table = $table;
+        $this->_table = $table;
 
         $this->_initEntity($data);
     }
 
     public function __set($name, $value) {
         $this->_data[$name] = $value;
-        $this->update[$name] = $value;
+        $this->_update[$name] = $value;
     }
 
     public function __get($name) {
@@ -53,30 +56,29 @@ class Crayd_Entity {
     }
 
     public function reset() {
-        $this->where = array();
         $this->_data = array();
-        $this->update = array();
+        $this->_update = array();
     }
 
     public function save() {
-        if (count($this->update) > 0) {
-            $this->_update($this->update);
+        if (count($this->_update) > 0) {
+            $this->_update($this->_update);
         }
     }
 
     public function _load($data) {
         $data = (int) $data;
-        $sql = "SELECT * FROM {$this->table} WHERE id = {$data}";
+        $sql = "SELECT * FROM {$this->_table} WHERE id = {$data}";
         $this->_data = $this->db->fetchRow($sql);
     }
 
     public function _new($data) {
-        $id = $this->db->insert($this->table, $data);
+        $id = $this->db->insert($this->_table, $data);
         $this->_load($id);
     }
 
     public function _update($array) {
-        if ($this->table == '') {
+        if ($this->_table == '') {
             return false;
         }
 
@@ -84,11 +86,11 @@ class Crayd_Entity {
             return false;
         }
 
-        $this->db->update($this->table, $array, "id = {$this->id}");
+        $this->db->update($this->_table, $array, "id = {$this->id}");
     }
 
     public function delete() {
-        $this->db->delete($this->table, "id = {$this->id}");
+        $this->db->delete($this->_table, "id = {$this->id}");
     }
 
 }
