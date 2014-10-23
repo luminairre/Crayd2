@@ -55,6 +55,10 @@ class Crayd_Entity {
         return $this->_data;
     }
 
+    public function toObject() {
+        return json_decode(json_encode($this->_data));
+    }
+
     public function reset() {
         $this->_data = array();
         $this->_update = array();
