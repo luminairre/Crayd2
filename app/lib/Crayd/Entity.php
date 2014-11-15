@@ -77,6 +77,11 @@ class Crayd_Entity {
     }
 
     public function _new($data) {
+    	foreach($data as $key => $value) {
+            if(empty($value)) {
+                unset($data[$key]);
+            }
+        }
         $id = $this->db->insert($this->_table, $data);
         $this->_load($id);
     }
