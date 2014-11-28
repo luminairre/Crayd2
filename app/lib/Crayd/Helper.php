@@ -121,16 +121,16 @@ class Crayd_Helper {
 
         if (strpos($navigator_user_agent, 'trident') !== false)
             return 'trident';
-        
+
         if (strpos($navigator_user_agent, "webkit") !== false)
             return 'webkit';
-        
+
         if (strpos($navigator_user_agent, "presto") !== false)
             return 'presto';
-        
+
         if (strpos($navigator_user_agent, "gecko") !== false)
             return 'gecko';
-        
+
         if (strpos($navigator_user_agent, "robot") !== false)
             return 'robot';
         if (strpos($navigator_user_agent, "spider") !== false)
@@ -141,12 +141,12 @@ class Crayd_Helper {
             return 'robot';
         if (strpos($navigator_user_agent, "search") !== false)
             return 'robot';
-        
+
         if (strpos($navigator_user_agent, "w3c_validator") !== false)
             return 'validator';
         if (strpos($navigator_user_agent, "jigsaw") !== false)
             return 'validator';
-        
+
         return 'unknownengine';
     }
 
@@ -156,6 +156,12 @@ class Crayd_Helper {
     public static function getPlatform() {
         $navigator_user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
 
+        if (strpos($navigator_user_agent, 'android') !== false)
+            return 'android';
+        
+        if (strpos($navigator_user_agent, 'ipad') !== false || strpos($navigator_user_agent, 'iphone') !== false)
+            return 'ios';
+        
         if (strpos($navigator_user_agent, 'linux') !== false)
             return 'linux';
 
@@ -164,7 +170,8 @@ class Crayd_Helper {
 
         if (strpos($navigator_user_agent, 'win') !== false)
             return 'windows';
-
+        
+        
         return 'unknownplatform';
     }
 
@@ -236,6 +243,38 @@ class Crayd_Helper {
         }
 
         return $bytes;
+    }
+
+    /**
+     * Kudos to Zac
+     * http://www.zachstronaut.com/posts/2009/01/20/php-relative-date-time-string.html
+     * @param string $ptime
+     * @return string
+     */
+    static public function timeElapsed($ptime) {
+
+        $etime = $_SERVER['REQUEST_TIME'] - $ptime;
+        if ($etime < 1) {
+            return 'baru';
+        }
+        if($etime > 604800) {
+            return date('d M Y', $ptime);
+        }
+        $a = array(12 * 30 * 24 * 60 * 60 => 'tahun',
+            30 * 24 * 60 * 60 => 'bulan',
+            24 * 60 * 60 => 'hari',
+            60 * 60 => 'jam',
+            60 => 'menit',
+            1 => 'detik'
+        );
+
+        foreach ($a as $secs => $str) {
+            $d = $etime / $secs;
+            if ($d >= 1) {
+                $r = round($d);
+                return $r . ' ' . $str . ($r > 1 ? '' : '');
+            }
+        }
     }
 
 }

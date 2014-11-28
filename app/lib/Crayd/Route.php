@@ -191,6 +191,10 @@ class Crayd_Route {
                         $this->data->subaction = $segments[2];
                         $used = 3;
                     }
+                    if (method_exists($this->data->controller . 'Controller', $this->data->action . 'Action_' . $segments[2] . 'Mainaction')) {
+                        $this->data->subaction = $segments[2];
+                        $used = 3;
+                    }
                 }
             } else {
                 if (file_exists($controllerDir . DS . 'indexController' . EXT) && method_exists('indexController', $segments[0] . 'Action')) {
@@ -203,6 +207,10 @@ class Crayd_Route {
                     // Subaction checking
                     if ($segments[1] != '') {
                         if (method_exists($this->data->controller . 'Controller', $this->data->action . 'Action_' . $segments[1] . 'Subaction')) {
+                            $this->data->subaction = $segments[1];
+                            $used = 2;
+                        }
+                        if (method_exists($this->data->controller . 'Controller', $this->data->action . 'Action_' . $segments[1] . 'Mainaction')) {
                             $this->data->subaction = $segments[1];
                             $used = 2;
                         }
